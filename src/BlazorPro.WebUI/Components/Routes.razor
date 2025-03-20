@@ -1,0 +1,29 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+
+<Router AppAssembly="typeof(Program).Assembly">
+	<Found Context="routeData">
+		@* <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
+        <FocusOnNavigate RouteData="routeData" Selector="h1" /> *@
+		<AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
+			<NotAuthorized>
+				@code {
+		[Inject] NavigationManager Navigation { get; set; } = null!;
+
+		protected override void OnInitialized()
+		{
+			var currentUri = Navigation.ToBaseRelativePath(Navigation.Uri);
+			if (!currentUri.Equals("login", StringComparison.OrdinalIgnoreCase))
+			{
+					Navigation.NavigateTo("/Login");
+			}
+		}
+				}
+
+			</NotAuthorized>
+		</AuthorizeRouteView>
+	</Found>
+	<NotFound>
+		<h1>Not Found</h1>
+		<p>Page 404 Not Found!</p>
+	</NotFound>
+</Router>

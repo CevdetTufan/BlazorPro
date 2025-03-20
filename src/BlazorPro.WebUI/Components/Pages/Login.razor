@@ -1,0 +1,61 @@
+﻿@page "/login"
+@layout LoginLayout
+@attribute [AllowAnonymous]
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using Microsoft.AspNetCore.Authorization
+@* @inject IHttpContextAccessor HttpContextAccessor
+@inject NavigationManager Navigation *@
+
+<div class="login-background">
+	<div class="login-card">
+		<div class="login-circle">
+			<span class="user-icon">&#128100;</span>
+		</div>
+		<h2>Portal Login</h2>
+		<div class="form-group">
+			<!-- Blazor'da form verilerini @bind ile bağlayabilirsiniz -->
+			<input type="text" @bind="Username" placeholder="Username" />
+		</div>
+		<div class="form-group">
+			<input type="password" @bind="Password" placeholder="Password" />
+		</div>
+		<!-- Butonun onclick eventi -->
+		<button class="btn-login" @onclick="HandleLogin">Login</button>
+
+		<!-- Hata mesajını koşullu olarak gösterme -->
+		@if (!string.IsNullOrEmpty(ErrorMessage))
+		{
+			<p style="color: red;">@ErrorMessage</p>
+		}
+
+
+		<p class="forgot">
+			Forgot your password? <a href="#">Click Here</a>
+		</p>
+	</div>
+</div>
+
+@code {
+	private string Username { get; set; }
+	private string Password { get; set; }
+
+	private string ErrorMessage { get; set; }
+
+	// Butonun çağıracağı metod
+	private void HandleLogin()
+	{
+		if (Username == "admin" && Password == "1234")
+		{
+			// Giriş başarılı
+			ErrorMessage = string.Empty;
+			// Burada yönlendirme vb. işlemleri yapabilirsiniz
+		}
+		else
+		{
+			// Giriş başarısız
+			ErrorMessage = "Kullanıcı adı veya şifre hatalı.";
+		}
+	}
+}
