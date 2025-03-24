@@ -1,29 +1,39 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
+﻿@using BlazorPro.WebUI.Utils
+@using Microsoft.AspNetCore.Components.Authorization
 
-<Router AppAssembly="typeof(Program).Assembly">
-	<Found Context="routeData">
-		@* <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
-        <FocusOnNavigate RouteData="routeData" Selector="h1" /> *@
-		<AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
-			<NotAuthorized>
-				@code {
-		[Inject] NavigationManager Navigation { get; set; } = null!;
+@inject AuthenticationStateProvider AuthProvider
+@inject ILocalStorageService localStorage
 
-		protected override void OnInitialized()
-		{
-			var currentUri = Navigation.ToBaseRelativePath(Navigation.Uri);
-			if (!currentUri.Equals("login", StringComparison.OrdinalIgnoreCase))
-			{
-					Navigation.NavigateTo("/Login");
-			}
-		}
-				}
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p>Sayfa bulunamadı.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
 
-			</NotAuthorized>
-		</AuthorizeRouteView>
-	</Found>
-	<NotFound>
-		<h1>Not Found</h1>
-		<p>Page 404 Not Found!</p>
-	</NotFound>
-</Router>
+@code {
+    private bool _initialized = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_initialized)
+        {
+            _initialized = true;
+
+            if (AuthProvider is AuthStateProvider authProvider)
+            {
+                await authProvider.InitializeAsync(); // localStorage üzerinden giriş bilgisi al
+                StateHasChanged();
+            }
+
+    
+        }
+    }
+}
+

@@ -5,6 +5,7 @@
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authentication.Cookies
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 @* @inject IHttpContextAccessor HttpContextAccessor
 @inject NavigationManager Navigation *@
 
@@ -22,7 +23,7 @@
 			<input type="password" @bind="Password" placeholder="Password" />
 		</div>
 		<!-- Butonun onclick eventi -->
-		<button class="btn-login" @onclick="HandleLogin">Login</button>
+		<button class="btn-login" @onclick="HandleLoginAsync">Login</button>
 
 		<!-- Hata mesajını koşullu olarak gösterme -->
 		@if (!string.IsNullOrEmpty(ErrorMessage))
@@ -36,26 +37,3 @@
 		</p>
 	</div>
 </div>
-
-@code {
-	private string Username { get; set; }
-	private string Password { get; set; }
-
-	private string ErrorMessage { get; set; }
-
-	// Butonun çağıracağı metod
-	private void HandleLogin()
-	{
-		if (Username == "admin" && Password == "1234")
-		{
-			// Giriş başarılı
-			ErrorMessage = string.Empty;
-			// Burada yönlendirme vb. işlemleri yapabilirsiniz
-		}
-		else
-		{
-			// Giriş başarısız
-			ErrorMessage = "Kullanıcı adı veya şifre hatalı.";
-		}
-	}
-}
